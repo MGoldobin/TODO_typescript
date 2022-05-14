@@ -1,9 +1,10 @@
-import styled from 'styled-components'
-import { observer } from 'mobx-react-lite'
+import React, { useState } from 'react'
 import { useStore } from './hooks/useStore'
+import { observer } from 'mobx-react-lite'
+import styled from 'styled-components'
 import SwitchButton from './components/UI/SwitchButton'
 import Todo from './components/Todo'
-import { ConsoleLog } from './vendor/consoleLog'
+import { AddPopup, ChangePopup } from './components/UI/Popup'
 
 const StyledApp = styled.div`
   color: ${props => props.theme.color};
@@ -41,7 +42,11 @@ const Field = styled.div`
 `
 
 const App = observer(() => {
-  const { themeStore, todoStore } = useStore()
+  const { themeStore, todoStore, popupStore } = useStore()
+
+  const addHandleClick = () => {
+    popupStore.changeAddPopup(true)
+  }
 
   return (
     <StyledApp theme={themeStore.theme}>
@@ -50,16 +55,27 @@ const App = observer(() => {
         <Field>
           <h2>В процессе</h2>
           {
-            todoStore.todoList.filter(todo => todo.complete).map(todo => <Todo task={todo} key={todo.id}/>)
+            todoStore.todoList.filter(todo => !todo.complete).map(todo => <Todo task={todo} key={todo.id}/>)
           }
+          <button onClick={addHandleClick}>Добавить todo</button>
         </Field>
         <Field>
           <h2>Выполнено</h2>
           {
-            todoStore.todoList.filter(todo => !todo.complete).map(todo => <Todo task={todo} key={todo.id}/>)
+            todoStore.todoList.filter(todo => todo.complete).map(todo => <Todo task={todo} key={todo.id}/>)
           }
         </Field>
       </Board>
+      {
+        popupStore.isOpenAddPopup
+        ? <AddPopup />
+        : null
+      }
+      {
+        popupStore.isOpenChangePopup
+        ? <ChangePopup />
+        : null
+      }
       <SwitchButton/>
     </StyledApp>
   )
