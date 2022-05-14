@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { DragEvent, MouseEvent, useState, useEffect } from 'react'
 import { todo } from '../vendor/todo'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '../hooks/useStore'
@@ -57,22 +57,22 @@ const RemoveButton = styled.button`
 `
 
 const Todo = observer(({task}: {task: todo}) => {
-	const { themeStore, todoStore } = useStore()
+	const { themeStore, todoStore, popupStore } = useStore()
 
-	const handleRemoveClick = (e: React.MouseEvent<HTMLElement>) => {
+	const handleRemoveClick = (e: MouseEvent<HTMLElement>) => {
 		e.preventDefault()
 		todoStore.removeTodo(task.id)
 	}
 
-	const handleToggleClick = (e: React.MouseEvent<HTMLElement>) => {
+	const handleToggleClick = (e: MouseEvent<HTMLElement>) => {
 		e.preventDefault()
 		todoStore.changeStatus(task.id)
 	}
 
-	const handleChangeClick = (e: React.MouseEvent<HTMLElement>) => {
+	const handleChangeClick = (e: MouseEvent<HTMLElement>) => {
 		e.preventDefault()
-		//Вылазит попап))
-		alert("ПОПАП!!!")
+		popupStore.setTask(task)
+		popupStore.changeChangePopup(true)
 	}
 
 	return (
