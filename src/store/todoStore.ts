@@ -6,17 +6,20 @@ class TodoStore {
 		{
 			id: 1,
 			text: "Создать todo",
-			complete: false
+			complete: true,
+			order: 1
 		},
 		{
 			id: 2,
-			text: "Реализовать dnd",
-			complete: false
+			text: "Реализовать dnd<never>",
+			complete: false,
+			order: 2
 		},
 		{
 			id: 3,
 			text: "Сделать перерыв на чай",
-			complete: true
+			complete: true,
+			order: 3
 		},
 	]
 
@@ -27,12 +30,14 @@ class TodoStore {
 			addTodo: action,
 			removeTodo: action,
 			changeTodo: action,
-			changeStatus: action
+			changeStatus: action,
+			newList: action
 		})
 		this.addTodo = this.addTodo.bind(this)
 		this.removeTodo = this.removeTodo.bind(this)
 		this.changeTodo = this.changeTodo.bind(this)
 		this.changeStatus = this.changeStatus.bind(this)
+		this.newList = this.newList.bind(this)
 	}
 
 	get availableId() {
@@ -40,8 +45,8 @@ class TodoStore {
 		return Math.max.apply(null, arr) + 1
 	}
 
-	addTodo(text: string, complete: boolean): void {
-		//rdevbgder
+	addTodo(newTodo: todo): void {
+		this.todoList.push(newTodo)
 	}
 
 	removeTodo(id: number): void {
@@ -50,8 +55,14 @@ class TodoStore {
 		})
 	}
 
-	changeTodo(id: number, newText: string): void {
-		
+	newList(newList: todo[]): void {
+		this.todoList = newList
+	}
+
+	changeTodo(newTodo: todo): void {
+		this.todoList.forEach((el, i) => {
+			if (el.id === newTodo.id) this.todoList[i] = newTodo
+		})
 	}
 
 	changeStatus(id: number): void {
